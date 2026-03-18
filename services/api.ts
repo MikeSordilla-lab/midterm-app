@@ -1,5 +1,5 @@
 // API Service for Student Management
-// Update the BASE_URL to match your server's IP address
+import { getBaseURL } from './config';
 
 export interface Student {
   id: number;
@@ -17,25 +17,8 @@ export interface ApiResponse {
   id?: number;
 }
 
-// Auto-detect API URL based on environment
-let BASE_URL = getDefaultAPIUrl();
-
-function getDefaultAPIUrl(): string {
-  // For web browser at localhost:8081, use localhost:80
-  if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
-    return 'http://localhost/midterm-api/api';
-  }
-  
-  // For other environments, you can manually set the IP
-  // Example for real device: 'http://192.168.1.100/midterm-api/api'
-  return 'http://localhost/midterm-api/api';
-}
-
-// Allow setting custom IP
-export const setAPIBaseURL = (ip: string) => {
-  BASE_URL = `http://${ip}/midterm-api/api`;
-  console.log('API Base URL set to:', BASE_URL);
-};
+// Get dynamically configured base URL
+const BASE_URL = getBaseURL();
 
 export const getAPIBaseURL = () => BASE_URL;
 
@@ -81,14 +64,18 @@ export const createStudent = async (
   try {
     console.log('Creating student:', { firstname, lastname, ratings });
     
-    const formData = new FormData();
-    formData.append('firstname', firstname);
-    formData.append('lastname', lastname);
-    formData.append('ratings', ratings.toString());
+    // Use URL-encoded form instead of FormData for better React Native compatibility
+    const params = new URLSearchParams();
+    params.append('firstname', firstname);
+    params.append('lastname', lastname);
+    params.append('ratings', ratings.toString());
 
     const response = await fetch(`${BASE_URL}/create_student.php`, {
       method: 'POST',
-      body: formData,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: params.toString(),
       mode: 'cors',
       credentials: 'omit'
     });
@@ -117,15 +104,19 @@ export const updateStudent = async (
   try {
     console.log('Updating student:', { id, firstname, lastname, ratings });
     
-    const formData = new FormData();
-    formData.append('id', id.toString());
-    formData.append('firstname', firstname);
-    formData.append('lastname', lastname);
-    formData.append('ratings', ratings.toString());
+    // Use URL-encoded form instead of FormData for better React Native compatibility
+    const params = new URLSearchParams();
+    params.append('id', id.toString());
+    params.append('firstname', firstname);
+    params.append('lastname', lastname);
+    params.append('ratings', ratings.toString());
 
     const response = await fetch(`${BASE_URL}/update_student.php`, {
       method: 'POST',
-      body: formData,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: params.toString(),
       mode: 'cors',
       credentials: 'omit'
     });
@@ -149,12 +140,16 @@ export const deleteStudent = async (id: number): Promise<ApiResponse> => {
   try {
     console.log('Deleting student:', id);
     
-    const formData = new FormData();
-    formData.append('id', id.toString());
+    // Use URL-encoded form instead of FormData for better React Native compatibility
+    const params = new URLSearchParams();
+    params.append('id', id.toString());
 
     const response = await fetch(`${BASE_URL}/delete_student.php`, {
       method: 'POST',
-      body: formData,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: params.toString(),
       mode: 'cors',
       credentials: 'omit'
     });
