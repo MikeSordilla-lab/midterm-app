@@ -1,18 +1,18 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { Image } from "expo-image";
+import { Platform, StyleSheet } from "react-native";
 
-import { Collapsible } from '@/components/ui/collapsible';
-import { ExternalLink } from '@/components/external-link';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Fonts } from '@/constants/theme';
+import { Collapsible } from "@/components/ui/collapsible";
+import { ExternalLink } from "@/components/external-link";
+import ParallaxScrollView from "@/components/parallax-scroll-view";
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { IconSymbol } from "@/components/ui/icon-symbol";
+import { Fonts } from "@/constants/theme";
 
 export default function TabTwoScreen() {
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
+      headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
       headerImage={
         <IconSymbol
           size={310}
@@ -20,93 +20,243 @@ export default function TabTwoScreen() {
           name="chevron.left.forwardslash.chevron.right"
           style={styles.headerImage}
         />
-      }>
+      }
+    >
       <ThemedView style={styles.titleContainer}>
         <ThemedText
           type="title"
           style={{
             fontFamily: Fonts.rounded,
-          }}>
-          Explore
+          }}
+        >
+          📚 Student Management System
         </ThemedText>
       </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
+      <ThemedText>
+        Complete CRUD system with MySQL, PHP API, and Expo mobile app.
+      </ThemedText>
+
+      <Collapsible title="🚀 Getting Started">
         <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
+          This app is part of a complete Student Management System. The main tab
+          shows all students with full CRUD capabilities.
         </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
+        <ThemedText style={{ marginTop: 10 }}>
+          <ThemedText type="defaultSemiBold">First steps:</ThemedText>
         </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
+        <ThemedText>1. Start XAMPP (Apache & MySQL)</ThemedText>
+        <ThemedText>2. Visit http://localhost/midterm-api/setup.php</ThemedText>
         <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
+          3. Check the Students tab to view and manage records
         </ThemedText>
       </Collapsible>
-      <Collapsible title="Images">
+
+      <Collapsible title="🗄️ Database">
         <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
+          <ThemedText type="defaultSemiBold">Database: student_db</ThemedText>
         </ThemedText>
-        <Image
-          source={require('@/assets/images/react-logo.png')}
-          style={{ width: 100, height: 100, alignSelf: 'center' }}
-        />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
+        <ThemedText>
+          <ThemedText type="defaultSemiBold">Table: student_list</ThemedText>
+        </ThemedText>
+        <ThemedView
+          style={{
+            backgroundColor: "#f5f5f5",
+            borderRadius: 4,
+            padding: 10,
+            marginTop: 8,
+          }}
+        >
+          <ThemedText
+            style={{ fontFamily: Fonts.mono, fontSize: 12, marginBottom: 6 }}
+          >
+            id (INT)
+          </ThemedText>
+          <ThemedText
+            style={{ fontFamily: Fonts.mono, fontSize: 12, marginBottom: 6 }}
+          >
+            firstname (VARCHAR 50)
+          </ThemedText>
+          <ThemedText
+            style={{ fontFamily: Fonts.mono, fontSize: 12, marginBottom: 6 }}
+          >
+            lastname (VARCHAR 50)
+          </ThemedText>
+          <ThemedText
+            style={{ fontFamily: Fonts.mono, fontSize: 12, marginBottom: 6 }}
+          >
+            ratings (INT 0-20000)
+          </ThemedText>
+          <ThemedText style={{ fontFamily: Fonts.mono, fontSize: 12 }}>
+            last_update (DATETIME)
+          </ThemedText>
+        </ThemedView>
       </Collapsible>
-      <Collapsible title="Light and dark mode components">
+
+      <Collapsible title="🔌 API Endpoints">
         <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
+          <ThemedText type="defaultSemiBold">Base URL:</ThemedText>
         </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
+        <ThemedView
+          style={{
+            backgroundColor: "#f5f5f5",
+            borderRadius: 4,
+            padding: 10,
+            marginTop: 8,
+            marginBottom: 10,
+          }}
+        >
+          <ThemedText style={{ fontFamily: Fonts.mono, fontSize: 12 }}>
+            http://localhost/midterm-api/api/
+          </ThemedText>
+        </ThemedView>
+        <ThemedText>
+          <ThemedText type="defaultSemiBold">Endpoints:</ThemedText>
+        </ThemedText>
+        <ThemedView
+          style={{
+            backgroundColor: "#f5f5f5",
+            borderRadius: 4,
+            padding: 10,
+            marginTop: 8,
+          }}
+        >
+          <ThemedText
+            style={{ fontFamily: Fonts.mono, fontSize: 12, marginBottom: 6 }}
+          >
+            GET /students.php
+          </ThemedText>
+          <ThemedText
+            style={{ fontFamily: Fonts.mono, fontSize: 12, marginBottom: 6 }}
+          >
+            POST /create_student.php
+          </ThemedText>
+          <ThemedText
+            style={{ fontFamily: Fonts.mono, fontSize: 12, marginBottom: 6 }}
+          >
+            POST /update_student.php
+          </ThemedText>
+          <ThemedText style={{ fontFamily: Fonts.mono, fontSize: 12 }}>
+            POST /delete_student.php
+          </ThemedText>
+        </ThemedView>
       </Collapsible>
-      <Collapsible title="Animations">
+
+      <Collapsible title="🌐 Web Frontend">
+        <ThemedText>Access the web interface at:</ThemedText>
+        <ThemedView
+          style={{
+            backgroundColor: "#f5f5f5",
+            borderRadius: 4,
+            padding: 10,
+            marginTop: 8,
+            marginBottom: 10,
+          }}
+        >
+          <ThemedText style={{ fontFamily: Fonts.mono, fontSize: 12 }}>
+            http://localhost/midterm-api/
+          </ThemedText>
+        </ThemedView>
         <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful{' '}
-          <ThemedText type="defaultSemiBold" style={{ fontFamily: Fonts.mono }}>
-            react-native-reanimated
-          </ThemedText>{' '}
-          library to create a waving hand animation.
+          The web version provides the same CRUD functionality with an enhanced
+          UI design.
         </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
+      </Collapsible>
+
+      <Collapsible title="📱 App Features">
+        <ThemedText>
+          <ThemedText type="defaultSemiBold">Main Features:</ThemedText>
+        </ThemedText>
+        <ThemedText>✓ View all students</ThemedText>
+        <ThemedText>✓ Search by name or ID</ThemedText>
+        <ThemedText>✓ Pull-to-refresh</ThemedText>
+        <ThemedText>✓ Add new student</ThemedText>
+        <ThemedText>✓ Edit existing student</ThemedText>
+        <ThemedText>✓ Delete student</ThemedText>
+        <ThemedText>✓ Input validation</ThemedText>
+        <ThemedText>✓ Real-time updates</ThemedText>
+      </Collapsible>
+
+      <Collapsible title="🔧 For Real Device">
+        <ThemedText>To use on a physical phone:</ThemedText>
+        <ThemedText style={{ marginTop: 10 }}>
+          <ThemedText type="defaultSemiBold">1. Find PC IP:</ThemedText>
+        </ThemedText>
+        <ThemedView
+          style={{
+            backgroundColor: "#f5f5f5",
+            borderRadius: 4,
+            padding: 10,
+            marginTop: 8,
+          }}
+        >
+          <ThemedText style={{ fontFamily: Fonts.mono, fontSize: 12 }}>
+            Windows CMD: ipconfig
+          </ThemedText>
+        </ThemedView>
+        <ThemedText style={{ marginTop: 10 }}>
+          <ThemedText type="defaultSemiBold">
+            2. Edit services/api.ts
+          </ThemedText>
+        </ThemedText>
+        <ThemedText>
+          Update BASE_URL with your IP address (192.168.x.x)
+        </ThemedText>
+        <ThemedText style={{ marginTop: 10 }}>
+          <ThemedText type="defaultSemiBold">3. Ensure:</ThemedText>
+        </ThemedText>
+        <ThemedText>✓ Phone and PC on same WiFi</ThemedText>
+        <ThemedText>✓ Firewall allows Apache</ThemedText>
+      </Collapsible>
+
+      <Collapsible title="⚡ Commands">
+        <ThemedView
+          style={{
+            backgroundColor: "#f5f5f5",
+            borderRadius: 4,
+            padding: 10,
+            marginTop: 8,
+          }}
+        >
+          <ThemedText
+            style={{ fontFamily: Fonts.mono, fontSize: 12, marginBottom: 8 }}
+          >
+            npm install
+          </ThemedText>
+          <ThemedText
+            style={{ fontFamily: Fonts.mono, fontSize: 12, marginBottom: 8 }}
+          >
+            npm start
+          </ThemedText>
+          <ThemedText
+            style={{ fontFamily: Fonts.mono, fontSize: 12, marginBottom: 8 }}
+          >
+            npm run web
+          </ThemedText>
+          <ThemedText style={{ fontFamily: Fonts.mono, fontSize: 12 }}>
+            npm run android
+          </ThemedText>
+        </ThemedView>
+      </Collapsible>
+
+      <Collapsible title="✅ Checklist">
+        <ThemedText>□ XAMPP Apache running</ThemedText>
+        <ThemedText>□ XAMPP MySQL running</ThemedText>
+        <ThemedText>□ Database setup completed</ThemedText>
+        <ThemedText>□ Can view students</ThemedText>
+        <ThemedText>□ Can add student</ThemedText>
+        <ThemedText>□ Can edit student</ThemedText>
+        <ThemedText>□ Can delete student</ThemedText>
       </Collapsible>
     </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
-  },
   titleContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 8,
+  },
+  headerImage: {
+    color: "#808080",
   },
 });
