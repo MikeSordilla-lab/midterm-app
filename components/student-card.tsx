@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Platform,
 } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { Divider } from "@/components/ui/divider";
@@ -159,7 +160,8 @@ export const StudentCard: React.FC<StudentCardProps> = ({
           onPress={() => onEdit(student)}
           activeOpacity={0.7}
         >
-          <ThemedText style={styles.buttonText}>✏️ Edit</ThemedText>
+          <MaterialIcons name="edit" size={20} color="#fff" />
+          <ThemedText style={styles.buttonText}>Edit</ThemedText>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -176,9 +178,12 @@ export const StudentCard: React.FC<StudentCardProps> = ({
           activeOpacity={0.7}
         >
           {isDeleting ? (
-            <ActivityIndicator color={themeColors.primaryText} size="small" />
+            <ActivityIndicator color="#fff" size="small" />
           ) : (
-            <ThemedText style={styles.buttonText}>🗑️ Delete</ThemedText>
+            <>
+              <MaterialIcons name="delete" size={20} color="#fff" />
+              <ThemedText style={styles.buttonText}>Delete</ThemedText>
+            </>
           )}
         </TouchableOpacity>
       </View>
@@ -253,6 +258,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
+    gap: Spacing.sm,
   },
   editButton: {},
   deleteButton: {},

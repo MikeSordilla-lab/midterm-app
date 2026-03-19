@@ -9,6 +9,7 @@ import {
   RefreshControl,
   Platform,
 } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
@@ -308,11 +309,12 @@ export default function HomeScreen() {
           </ThemedText>
           {!searchText && (
             <EnhancedButton
-              title="➕ Add First Student"
+              title="Add First Student"
               onPress={handleAddStudent}
               variant="primary"
               size="md"
               style={styles.emptyStateButton}
+              icon={<MaterialIcons name="person-add" size={20} color="#fff" />}
             />
           )}
         </ThemedView>
@@ -355,11 +357,11 @@ export default function HomeScreen() {
         onPress={handleAddStudent}
         activeOpacity={0.8}
       >
-        <ThemedText
-          style={[styles.fabText, { color: themeColors.primaryText }]}
-        >
-          ➕
-        </ThemedText>
+        <MaterialIcons
+          name="person-add"
+          size={28}
+          color={themeColors.primaryText}
+        />
       </TouchableOpacity>
 
       {/* Student Form Modal */}
