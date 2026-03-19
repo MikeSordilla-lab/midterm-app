@@ -166,13 +166,13 @@ export const StudentForm: React.FC<StudentFormProps> = ({
 
             {/* Rating Input */}
             <EnhancedTextInput
-              label="Rating (0 - 20000)"
+              label="Rating (0 - 100)"
               placeholder="Enter rating"
               value={ratings}
               onChangeText={setRatings}
               keyboardType="numeric"
               error={errors.ratings}
-              helperText="Enter a number between 0 and 20000"
+              helperText="Enter a number between 0 and 100"
               maxLength={5}
               editable={!isLoading}
             />
