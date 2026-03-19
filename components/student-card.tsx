@@ -5,10 +5,24 @@ import {
   View,
   Alert,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
+import { Divider } from "@/components/ui/divider";
+import { Avatar } from "@/components/ui/avatar";
+import { RatingBadge } from "@/components/ui/rating-badge";
 import { Student } from "@/services/api";
+import {
+  Spacing,
+  BorderRadius,
+  Typography,
+  Shadows,
+  LightTheme,
+  DarkTheme,
+  Sizes,
+} from "@/constants/design-tokens";
+import { useThemeColor } from "@/hooks/use-theme-color";
 
 interface StudentCardProps {
   student: Student;
@@ -24,6 +38,9 @@ export const StudentCard: React.FC<StudentCardProps> = ({
   isDeletingId,
 }) => {
   const isDeleting = isDeletingId === student.id;
+  const textColor = useThemeColor({}, "text");
+  const isDarkMode = textColor === "#f9fafb";
+  const themeColors = isDarkMode ? DarkTheme.colors : LightTheme.colors;
 
   const handleDelete = () => {
     Alert.alert(
@@ -56,32 +73,91 @@ export const StudentCard: React.FC<StudentCardProps> = ({
   };
 
   return (
-    <ThemedView style={styles.card}>
-      <ThemedView style={styles.cardHeader}>
-        <ThemedText type="defaultSemiBold" style={styles.studentName}>
-          {student.firstname} {student.lastname}
-        </ThemedText>
-        <ThemedText style={styles.studentId}>#ID: {student.id}</ThemedText>
-      </ThemedView>
+    <ThemedView
+      style={[
+        styles.card,
+        {
+          backgroundColor: themeColors.surfaceElevated,
+          borderColor: themeColors.border,
+        },
+      ]}
+    >
+      {/* Card Header - Student Avatar, Name & Rating */}
+      <View style={styles.cardHeader}>
+        <View style={styles.headerLeft}>
+          <Avatar
+            initials={`${student.firstname.charAt(0)}${student.lastname.charAt(0)}`}
+            size="md"
+            status="online"
+          />
+          <View style={styles.headerInfo}>
+            <ThemedText type="h3" style={styles.studentName}>
+              {student.firstname} {student.lastname}
+            </ThemedText>
+            <ThemedText
+              type="caption"
+              style={[styles.studentId, { color: themeColors.textSecondary }]}
+            >
+              ID: {student.id}
+            </ThemedText>
+          </View>
+        </View>
+        <RatingBadge rating={student.ratings} format="label" size="sm" />
+      </View>
 
-      <ThemedView style={styles.cardContent}>
-        <ThemedView style={styles.infoRow}>
-          <ThemedText style={styles.label}>Rating:</ThemedText>
-          <ThemedText style={styles.value}>{student.ratings}</ThemedText>
-        </ThemedView>
+      <Divider margin="md" />
 
-        <ThemedView style={styles.infoRow}>
-          <ThemedText style={styles.label}>Updated:</ThemedText>
-          <ThemedText style={styles.value}>
+      {/* Card Content - Student Details */}
+      <View style={styles.cardContent}>
+        {/* Rating Section */}
+        <View style={styles.infoRow}>
+          <ThemedText
+            type="label"
+            style={[styles.label, { color: themeColors.textSecondary }]}
+          >
+            Rating
+          </ThemedText>
+          <ThemedText
+            type="bodyLarge"
+            style={[styles.value, { color: themeColors.text }]}
+          >
+            {student.ratings}
+          </ThemedText>
+        </View>
+
+        <View style={styles.spacer} />
+
+        {/* Last Updated Section */}
+        <View style={styles.infoRow}>
+          <ThemedText
+            type="label"
+            style={[styles.label, { color: themeColors.textSecondary }]}
+          >
+            Last Updated
+          </ThemedText>
+          <ThemedText
+            type="bodySmall"
+            style={[styles.value, { color: themeColors.textSecondary }]}
+          >
             {formatDate(student.last_update)}
           </ThemedText>
-        </ThemedView>
-      </ThemedView>
+        </View>
+      </View>
 
-      <ThemedView style={styles.cardActions}>
+      <Divider margin="md" />
+
+      {/* Card Actions */}
+      <View style={styles.cardActions}>
         <TouchableOpacity
-          style={[styles.button, styles.editButton]}
+          style={[
+            styles.button,
+            styles.editButton,
+            {
+              backgroundColor: themeColors.primary,
+            },
+          ]}
           onPress={() => onEdit(student)}
+          activeOpacity={0.7}
         >
           <ThemedText style={styles.buttonText}>✏️ Edit</ThemedText>
         </TouchableOpacity>
@@ -90,83 +166,102 @@ export const StudentCard: React.FC<StudentCardProps> = ({
           style={[
             styles.button,
             styles.deleteButton,
+            {
+              backgroundColor: themeColors.error,
+            },
             isDeleting && styles.buttonDisabled,
           ]}
           onPress={handleDelete}
           disabled={isDeleting}
+          activeOpacity={0.7}
         >
           {isDeleting ? (
-            <ActivityIndicator color="#fff" size="small" />
+            <ActivityIndicator color={themeColors.primaryText} size="small" />
           ) : (
             <ThemedText style={styles.buttonText}>🗑️ Delete</ThemedText>
           )}
         </TouchableOpacity>
-      </ThemedView>
+      </View>
     </ThemedView>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 10,
-    padding: 16,
-    marginBottom: 12,
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.lg,
+    marginBottom: Spacing.md,
     borderWidth: 1,
-    borderColor: "#e0e0e0",
-    backgroundColor: "#f8f9fa",
+    // Shadow
+    ...Shadows.md,
   },
+
+  // Header Section
   cardHeader: {
-    marginBottom: 12,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: Spacing.md,
+  },
+  headerLeft: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.md,
+  },
+  headerInfo: {
+    flex: 1,
   },
   studentName: {
-    fontSize: 18,
-    fontWeight: "700",
-    marginBottom: 4,
+    marginBottom: Spacing.xs,
+    fontWeight: "700" as const,
   },
   studentId: {
-    fontSize: 12,
-    opacity: 0.6,
+    fontSize: Typography.caption.fontSize,
   },
+
+  // Content Section
   cardContent: {
-    marginBottom: 12,
+    paddingVertical: Spacing.md,
   },
   infoRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 6,
+    alignItems: "center",
+  },
+  spacer: {
+    height: Spacing.md,
   },
   label: {
-    fontSize: 14,
-    fontWeight: "600",
-    opacity: 0.7,
+    fontSize: Typography.label.fontSize,
+    fontWeight: "500" as const,
   },
   value: {
-    fontSize: 14,
-    fontWeight: "500",
+    fontWeight: "500" as const,
   },
+
+  // Actions Section
   cardActions: {
     flexDirection: "row",
-    gap: 10,
+    gap: Spacing.md,
+    paddingTop: Spacing.sm,
   },
   button: {
     flex: 1,
-    paddingVertical: 10,
-    borderRadius: 6,
+    height: Platform.OS === "web" ? 40 : Sizes.buttonHeight.md,
+    borderRadius: BorderRadius.md,
     alignItems: "center",
     justifyContent: "center",
+    flexDirection: "row",
   },
-  editButton: {
-    backgroundColor: "#28a745",
-  },
-  deleteButton: {
-    backgroundColor: "#dc3545",
+  editButton: {},
+  deleteButton: {},
+  buttonText: {
+    fontWeight: "600" as const,
+    fontSize: Typography.buttonText.fontSize,
+    color: "#fff",
   },
   buttonDisabled: {
-    opacity: 0.6,
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "600",
-    fontSize: 14,
+    opacity: 0.5,
   },
 });

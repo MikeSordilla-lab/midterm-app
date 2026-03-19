@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Offline - Student Manager</title>
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #1e40af;
+      --background: #ffffff;
+      --surface: #f9fafb;
+      --text: #1f2937;
+      --text-secondary: #6b7280;
+      --border: #e5e7eb;
+      --error: #ef4444;
+      --error-light: #fee2e2;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --background: #111827;
+        --surface: #1f2937;
+        --text: #f9fafb;
+        --text-secondary: #d1d5db;
+        --border: #374151;
+        --error-light: #7f1d1d;
+      }
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--background);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .offline-container {
+      text-align: center;
+      max-width: 500px;
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 3rem 1.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .offline-icon {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    .offline-title {
+      font-size: 1.875rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+
+    .offline-subtitle {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      line-height: 1.5;
+    }
+
+    .offline-message {
+      background-color: var(--error-light);
+      border-left: 4px solid var(--error);
+      padding: 1rem;
+      border-radius: 6px;
+      margin-bottom: 2rem;
+      text-align: left;
+      font-size: 0.875rem;
+    }
+
+    .offline-tips {
+      background-color: rgba(59, 130, 246, 0.1);
+      border-left: 4px solid var(--primary);
+      padding: 1.5rem;
+      border-radius: 6px;
+      text-align: left;
+      margin-bottom: 2rem;
+    }
+
+    .offline-tips h3 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--primary);
+    }
+
+    .offline-tips ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .offline-tips li {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      padding: 0.25rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+    }
+
+    .offline-tips li:before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    .offline-actions {
+      display: flex;
+      gap: 1rem;
+      flex-direction: column;
+    }
+
+    .button {
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .button-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .button-primary:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .button-secondary {
+      background-color: var(--border);
+      color: var(--text);
+    }
+
+    .button-secondary:hover {
+      background-color: var(--text-secondary);
+      color: white;
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--error);
+      margin-top: 2rem;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--error);
+      animation: blink 1.5s infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      50%,
+      100% {
+        opacity: 1;
+      }
+
+      25%,
+      75% {
+        opacity: 0.3;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="offline-container">
+    <div class="offline-icon">📡</div>
+
+    <h1 class="offline-title">You're Offline</h1>
+
+    <p class="offline-subtitle">
+      It looks like you've lost your internet connection. However, you can still view cached student data.
+    </p>
+
+    <div class="offline-message">
+      ⚠️ Some features like adding, editing, or deleting students require an internet connection. Your changes will be
+      synced automatically when you're back online.
+    </div>
+
+    <div class="offline-tips">
+      <h3>What you can do offline:</h3>
+      <ul>
+        <li>View previously loaded student information</li>
+        <li>Search through cached student data</li>
+        <li>Review student ratings and details</li>
+        <li>Queue actions to sync when online</li>
+      </ul>
+    </div>
+
+    <div class="offline-actions">
+      <button class="button button-primary" onclick="goHome()">
+        Try Again
+      </button>
+      <button class="button button-secondary" onclick="clearAllCache()">
+        Clear Cache & Refresh
+      </button>
+    </div>
+
+    <div class="status-indicator">
+      <span class="status-dot"></span>
+      <span>No Network Connection</span>
+    </div>
+  </div>
+
+  <script>
+    // Check for network and automatically redirect when back online
+    function checkNetwork() {
+      if (navigator.onLine) {
+        console.log('[Offline Page] Network connection restored!');
+        window.location.href = '/';
+      }
+    }
+
+    window.addEventListener('online', checkNetwork);
+
+    function goHome() {
+      window.location.href = '/';
+    }
+
+    function clearAllCache() {
+      if (confirm('This will clear all cached data. Continue?')) {
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.controller?.postMessage({
+            type: 'CLEAR_CACHE',
+          });
+        }
+        // Clear IndexedDB as well
+        if ('indexedDB' in window) {
+          const dbDeleteRequest = indexedDB.deleteDatabase('StudentDB');
+          dbDeleteRequest.onsuccess = () => {
+            console.log('[Offline Page] Cache cleared');
+            window.location.href = '/';
+          };
+        } else {
+          window.location.href = '/';
+        }
+      }
+    }
+
+    // Log offline page load
+    console.log('[Offline Page] Loaded - User is offline');
+  </script>
+</body>
+
+</html>

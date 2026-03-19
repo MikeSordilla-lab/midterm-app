@@ -8,13 +8,24 @@ import {
   ActivityIndicator,
   SafeAreaView,
   RefreshControl,
-  TextInput,
+  Platform,
 } from "react-native";
 
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { StudentForm } from "@/components/student-form";
 import { StudentCard } from "@/components/student-card";
+import { EnhancedTextInput } from "@/components/ui/text-input";
+import { EnhancedButton } from "@/components/ui/button";
+import { useThemeColor } from "@/hooks/use-theme-color";
+import {
+  Spacing,
+  BorderRadius,
+  LightTheme,
+  DarkTheme,
+  Shadows,
+  Sizes,
+} from "@/constants/design-tokens";
 import {
   getStudents,
   createStudent,
@@ -36,6 +47,10 @@ export default function HomeScreen() {
   const [searchText, setSearchText] = useState("");
   const [apiUrl] = useState(getAPIBaseURL());
   const [diagnosticError, setDiagnosticError] = useState<string>("");
+
+  const textColor = useThemeColor({}, "text");
+  const isDarkMode = textColor === "#f9fafb";
+  const themeColors = isDarkMode ? DarkTheme.colors : LightTheme.colors;
 
   // Load students
   const loadStudents = useCallback(async () => {
@@ -146,10 +161,15 @@ export default function HomeScreen() {
 
   if (loading) {
     return (
-      <ThemedView style={styles.container}>
+      <ThemedView
+        style={[styles.container, { backgroundColor: themeColors.background }]}
+      >
         <View style={styles.centerContent}>
-          <ActivityIndicator size="large" color="#667eea" />
-          <ThemedText style={styles.loadingText}>
+          <ActivityIndicator size="large" color={themeColors.primary} />
+          <ThemedText
+            type="body"
+            style={[styles.loadingText, { color: themeColors.textSecondary }]}
+          >
             Loading students...
           </ThemedText>
         </View>
@@ -158,43 +178,69 @@ export default function HomeScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ThemedView style={styles.header}>
-        <ThemedText type="title" style={styles.title}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: themeColors.background }]}
+    >
+      {/* Header Section */}
+      <ThemedView
+        style={[
+          styles.header,
+          {
+            backgroundColor: themeColors.surfaceBackground,
+            borderBottomColor: themeColors.divider,
+          },
+        ]}
+      >
+        <ThemedText type="h1" style={styles.title}>
           📚 Students
         </ThemedText>
-        <ThemedText style={styles.subtitle}>
+        <ThemedText
+          type="bodySmall"
+          style={[styles.subtitle, { color: themeColors.textSecondary }]}
+        >
           {filteredStudents.length} student
           {filteredStudents.length !== 1 ? "s" : ""} found
         </ThemedText>
       </ThemedView>
 
-      <ThemedView style={styles.searchContainer}>
-        <TextInput
-          style={styles.searchInput}
+      {/* Search Bar Section */}
+      <ThemedView
+        style={[
+          styles.searchContainer,
+          { backgroundColor: themeColors.background },
+        ]}
+      >
+        <EnhancedTextInput
           placeholder="Search by name or ID..."
-          placeholderTextColor="#999"
           value={searchText}
           onChangeText={setSearchText}
         />
       </ThemedView>
 
+      {/* Empty State or List */}
       {filteredStudents.length === 0 ? (
-        <ThemedView style={styles.emptyContainer}>
-          <ThemedText style={styles.emptyText}>
+        <ThemedView
+          style={[
+            styles.emptyContainer,
+            { backgroundColor: themeColors.background },
+          ]}
+        >
+          <ThemedText
+            type="body"
+            style={[styles.emptyText, { color: themeColors.textSecondary }]}
+          >
             {searchText
               ? "No students found matching your search"
               : "No students yet"}
           </ThemedText>
           {!searchText && (
-            <TouchableOpacity
-              style={styles.addButton}
+            <EnhancedButton
+              title="➕ Add First Student"
               onPress={handleAddStudent}
-            >
-              <ThemedText style={styles.addButtonText}>
-                ➕ Add First Student
-              </ThemedText>
-            </TouchableOpacity>
+              variant="primary"
+              size="md"
+              style={styles.emptyStateButton}
+            />
           )}
         </ThemedView>
       ) : (
@@ -209,17 +255,41 @@ export default function HomeScreen() {
               isDeletingId={deletingId}
             />
           )}
-          contentContainerStyle={styles.listContainer}
+          contentContainerStyle={[
+            styles.listContainer,
+            { backgroundColor: themeColors.background },
+          ]}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor={themeColors.primary}
+            />
           }
+          scrollIndicatorInsets={{ right: 1 }}
         />
       )}
 
-      <TouchableOpacity style={styles.fab} onPress={handleAddStudent}>
-        <ThemedText style={styles.fabText}>➕</ThemedText>
+      {/* Floating Action Button */}
+      <TouchableOpacity
+        style={[
+          styles.fab,
+          {
+            backgroundColor: themeColors.primary,
+            ...Shadows.lg,
+          },
+        ]}
+        onPress={handleAddStudent}
+        activeOpacity={0.8}
+      >
+        <ThemedText
+          style={[styles.fabText, { color: themeColors.primaryText }]}
+        >
+          ➕
+        </ThemedText>
       </TouchableOpacity>
 
+      {/* Student Form Modal */}
       <StudentForm
         visible={formVisible}
         onClose={() => {
@@ -247,85 +317,75 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+
+  // Header
   header: {
-    paddingHorizontal: 16,
-    paddingVertical: 20,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.lg,
     borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
   },
   title: {
-    fontSize: 28,
-    fontWeight: "700",
-    marginBottom: 4,
+    marginBottom: Spacing.xs,
+    fontWeight: "700" as const,
   },
   subtitle: {
-    fontSize: 14,
-    opacity: 0.6,
+    marginTop: Spacing.sm,
   },
+
+  // Search
   searchContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(0,0,0,0.05)",
   },
-  searchInput: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 14,
-  },
+
+  // List
   listContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    paddingBottom: 100,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.md,
+    paddingBottom: Platform.OS === "web" ? Spacing.xxl : 100,
   },
+
+  // Empty State
   emptyContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: Spacing.xl,
   },
   emptyText: {
-    fontSize: 16,
-    opacity: 0.6,
-    marginBottom: 20,
+    marginBottom: Spacing.lg,
+    textAlign: "center",
   },
-  addButton: {
-    backgroundColor: "#667eea",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
+  emptyStateButton: {
+    minWidth: 200,
   },
-  addButtonText: {
-    color: "#fff",
-    fontWeight: "600",
-    fontSize: 16,
-  },
-  fab: {
-    position: "absolute",
-    bottom: 20,
-    right: 20,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: "#667eea",
-    justifyContent: "center",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  fabText: {
-    fontSize: 32,
-  },
+
+  // Loading
   centerContent: {
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
   loadingText: {
-    marginTop: 12,
-    fontSize: 14,
+    marginTop: Spacing.md,
+  },
+
+  // FAB (Floating Action Button)
+  fab: {
+    position: "absolute",
+    bottom: Spacing.lg,
+    right: Spacing.lg,
+    width: Sizes.buttonHeight.lg,
+    height: Sizes.buttonHeight.lg,
+    borderRadius: BorderRadius.full,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 100,
+  },
+  fabText: {
+    fontSize: 24,
+    fontWeight: "600" as const,
   },
 });

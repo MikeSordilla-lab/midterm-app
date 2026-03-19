@@ -1,16 +1,28 @@
 import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
-  TextInput,
   TouchableOpacity,
   View,
   ScrollView,
   Alert,
   Modal,
   ActivityIndicator,
+  Platform,
+  SafeAreaView,
 } from "react-native";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
+import { EnhancedTextInput } from "@/components/ui/text-input";
+import { EnhancedButton } from "@/components/ui/button";
+import { Divider } from "@/components/ui/divider";
+import { useThemeColor } from "@/hooks/use-theme-color";
+import {
+  Spacing,
+  BorderRadius,
+  Typography,
+  LightTheme,
+  DarkTheme,
+} from "@/constants/design-tokens";
 
 interface StudentFormProps {
   visible: boolean;
@@ -41,6 +53,10 @@ export const StudentForm: React.FC<StudentFormProps> = ({
   const [lastname, setLastname] = useState("");
   const [ratings, setRatings] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  const textColor = useThemeColor({}, "text");
+  const isDarkMode = textColor === "#f9fafb";
+  const themeColors = isDarkMode ? DarkTheme.colors : LightTheme.colors;
 
   useEffect(() => {
     if (initialData) {
@@ -107,97 +123,85 @@ export const StudentForm: React.FC<StudentFormProps> = ({
       transparent={false}
       onRequestClose={handleClose}
     >
-      <ThemedView style={styles.container}>
-        <ThemedView style={styles.header}>
-          <ThemedText type="title" style={styles.headerTitle}>
+      <SafeAreaView
+        style={[styles.container, { backgroundColor: themeColors.background }]}
+      >
+        {/* Modal Header */}
+        <View
+          style={[styles.header, { borderBottomColor: themeColors.divider }]}
+        >
+          <ThemedText type="h2" style={styles.headerTitle}>
             {isEditing ? "✏️ Edit Student" : "➕ Add New Student"}
           </ThemedText>
-        </ThemedView>
+        </View>
 
-        <ScrollView style={styles.formContainer}>
+        {/* Form Content */}
+        <ScrollView
+          style={styles.formContainer}
+          contentContainerStyle={styles.formContent}
+          showsVerticalScrollIndicator={true}
+        >
           <ThemedView style={styles.form}>
-            <ThemedView style={styles.formGroup}>
-              <ThemedText style={styles.label}>First Name</ThemedText>
-              <TextInput
-                style={[styles.input, errors.firstname && styles.inputError]}
-                placeholder="Enter first name"
-                value={firstname}
-                onChangeText={setFirstname}
-                placeholderTextColor="#999"
-                editable={!isLoading}
-              />
-              {errors.firstname && (
-                <ThemedText style={styles.errorText}>
-                  {errors.firstname}
-                </ThemedText>
-              )}
-            </ThemedView>
+            {/* First Name Input */}
+            <EnhancedTextInput
+              label="First Name"
+              placeholder="Enter first name"
+              value={firstname}
+              onChangeText={setFirstname}
+              error={errors.firstname}
+              maxLength={50}
+              editable={!isLoading}
+            />
 
-            <ThemedView style={styles.formGroup}>
-              <ThemedText style={styles.label}>Last Name</ThemedText>
-              <TextInput
-                style={[styles.input, errors.lastname && styles.inputError]}
-                placeholder="Enter last name"
-                value={lastname}
-                onChangeText={setLastname}
-                placeholderTextColor="#999"
-                editable={!isLoading}
-              />
-              {errors.lastname && (
-                <ThemedText style={styles.errorText}>
-                  {errors.lastname}
-                </ThemedText>
-              )}
-            </ThemedView>
+            {/* Last Name Input */}
+            <EnhancedTextInput
+              label="Last Name"
+              placeholder="Enter last name"
+              value={lastname}
+              onChangeText={setLastname}
+              error={errors.lastname}
+              maxLength={50}
+              editable={!isLoading}
+            />
 
-            <ThemedView style={styles.formGroup}>
-              <ThemedText style={styles.label}>Rating (0-20000)</ThemedText>
-              <TextInput
-                style={[styles.input, errors.ratings && styles.inputError]}
-                placeholder="Enter rating"
-                value={ratings}
-                onChangeText={setRatings}
-                keyboardType="number-pad"
-                placeholderTextColor="#999"
-                editable={!isLoading}
-              />
-              {errors.ratings && (
-                <ThemedText style={styles.errorText}>
-                  {errors.ratings}
-                </ThemedText>
-              )}
-            </ThemedView>
+            {/* Rating Input */}
+            <EnhancedTextInput
+              label="Rating (0 - 20000)"
+              placeholder="Enter rating"
+              value={ratings}
+              onChangeText={setRatings}
+              keyboardType="numeric"
+              error={errors.ratings}
+              helperText="Enter a number between 0 and 20000"
+              maxLength={5}
+              editable={!isLoading}
+            />
 
-            <TouchableOpacity
-              style={[
-                styles.submitButton,
-                isLoading && styles.submitButtonDisabled,
-              ]}
+            <View style={{ height: Spacing.xl }} />
+
+            {/* Action Buttons */}
+            <EnhancedButton
+              title={isEditing ? "Update Student" : "Add Student"}
               onPress={handleSubmit}
+              variant="primary"
+              size="md"
+              fullWidth={true}
               disabled={isLoading}
-            >
-              {isLoading ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <ThemedText style={styles.submitButtonText}>
-                  {isEditing ? "Update Student" : "Add Student"}
-                </ThemedText>
-              )}
-            </TouchableOpacity>
+              loading={isLoading}
+            />
 
-            <TouchableOpacity
-              style={[
-                styles.cancelButton,
-                isLoading && styles.cancelButtonDisabled,
-              ]}
+            <EnhancedButton
+              title="Cancel"
               onPress={handleClose}
+              variant="outline"
+              size="md"
+              fullWidth={true}
               disabled={isLoading}
-            >
-              <ThemedText style={styles.cancelButtonText}>Cancel</ThemedText>
-            </TouchableOpacity>
+              style={{ marginTop: Spacing.md }}
+            />
           </ThemedView>
         </ScrollView>
-      </ThemedView>
+      </SafeAreaView>
     </Modal>
   );
 };
@@ -207,79 +211,22 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    paddingTop: 60,
-    paddingHorizontal: 20,
-    paddingBottom: 20,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.lg,
     borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
   },
   headerTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: "700" as const,
   },
   formContainer: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingHorizontal: Spacing.lg,
+  },
+  formContent: {
+    paddingTop: Spacing.lg,
+    paddingBottom: Spacing.xxxl,
   },
   form: {
-    paddingBottom: 40,
-  },
-  formGroup: {
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginBottom: 8,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    fontSize: 16,
-  },
-  inputError: {
-    borderColor: "#dc3545",
-  },
-  errorText: {
-    color: "#dc3545",
-    fontSize: 12,
-    marginTop: 4,
-  },
-  submitButton: {
-    backgroundColor: "#667eea",
-    paddingVertical: 14,
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 20,
-  },
-  submitButtonDisabled: {
-    opacity: 0.6,
-  },
-  submitButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  cancelButton: {
-    borderWidth: 2,
-    borderColor: "#6c757d",
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 10,
-  },
-  cancelButtonDisabled: {
-    opacity: 0.6,
-  },
-  cancelButtonText: {
-    color: "#6c757d",
-    fontSize: 16,
-    fontWeight: "600",
+    width: "100%",
   },
 });
