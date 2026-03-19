@@ -26,7 +26,7 @@ export const getAPIBaseURL = () => BASE_URL;
 export const getStudents = async (): Promise<Student[]> => {
   try {
     console.log('Fetching students from:', `${BASE_URL}/students.php`);
-    
+
     const response = await fetch(`${BASE_URL}/students.php`, {
       method: 'GET',
       headers: {
@@ -63,7 +63,7 @@ export const createStudent = async (
 ): Promise<ApiResponse> => {
   try {
     console.log('Creating student:', { firstname, lastname, ratings });
-    
+
     // Use URL-encoded form instead of FormData for better React Native compatibility
     const params = new URLSearchParams();
     params.append('firstname', firstname);
@@ -103,7 +103,7 @@ export const updateStudent = async (
 ): Promise<ApiResponse> => {
   try {
     console.log('Updating student:', { id, firstname, lastname, ratings });
-    
+
     // Use URL-encoded form instead of FormData for better React Native compatibility
     const params = new URLSearchParams();
     params.append('id', id.toString());
@@ -139,12 +139,16 @@ export const updateStudent = async (
 export const deleteStudent = async (id: number): Promise<ApiResponse> => {
   try {
     console.log('Deleting student:', id);
-    
+
     // Use URL-encoded form instead of FormData for better React Native compatibility
     const params = new URLSearchParams();
     params.append('id', id.toString());
 
-    const response = await fetch(`${BASE_URL}/delete_student.php`, {
+    const deleteUrl = `${BASE_URL}/delete_student.php`;
+    console.log('Delete URL:', deleteUrl);
+    console.log('Delete params:', params.toString());
+
+    const response = await fetch(deleteUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -155,12 +159,16 @@ export const deleteStudent = async (id: number): Promise<ApiResponse> => {
     });
 
     console.log('Delete response status:', response.status);
+    console.log('Delete response headers:', response.headers);
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorText = await response.text();
+      console.log('Delete error response:', errorText);
+      throw new Error(`HTTP error! status: ${response.status}. Response: ${errorText}`);
     }
 
     const data: ApiResponse = await response.json();
+    console.log('Delete response data:', data);
     return data;
   } catch (error) {
     console.error('Error deleting student:', error);
