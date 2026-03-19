@@ -23,6 +23,7 @@ import {
   Student,
   getAPIBaseURL,
 } from "@/services/api";
+import { runDiagnostics, logDetailedError } from "@/services/debug";
 
 export default function HomeScreen() {
   const [students, setStudents] = useState<Student[]>([]);
@@ -34,24 +35,50 @@ export default function HomeScreen() {
   const [deletingId, setDeletingId] = useState<number | undefined>();
   const [searchText, setSearchText] = useState("");
   const [apiUrl] = useState(getAPIBaseURL());
+  const [diagnosticError, setDiagnosticError] = useState<string>("");
 
   // Load students
   const loadStudents = useCallback(async () => {
     try {
       setLoading(true);
-      console.log("Loading students from:", apiUrl);
+      setDiagnosticError("");
+      console.log("📱 Loading students from:", apiUrl);
       const data = await getStudents();
       setStudents(data);
+      console.log("✅ Successfully loaded", data.length, "students");
     } catch (error) {
-      console.error("Load students error:", error);
-      Alert.alert(
-        "Error",
-        `Failed to load students from ${apiUrl}\n\nMake sure:\n1. Apache is running\n2. MySQL is running\n3. API server is accessible`,
-      );
+      logDetailedError("loadStudents", error);
+
+      // Run diagnostics on failure
+      console.log("🔍 Running diagnostics due to load failure...");
+      try {
+        const diagnosis = await runDiagnostics();
+        console.log("📊 Diagnosis Result:", diagnosis);
+
+        let errorMessage = `Failed to load students.\n\n`;
+        errorMessage += `API: ${apiUrl}\n`;
+        errorMessage += `Status: ${diagnosis.api.online ? "✅ Online" : "❌ Offline"}\n`;
+
+        if (diagnosis.errors && diagnosis.errors.length > 0) {
+          errorMessage += `\n⚠️  Issues:\n${diagnosis.errors.join("\n")}\n`;
+        }
+
+        if (diagnosis.recommendations && diagnosis.recommendations.length > 0) {
+          errorMessage += `\n📋 Recommendations:\n${diagnosis.recommendations.join("\n")}`;
+        }
+
+        setDiagnosticError(errorMessage);
+        Alert.alert("API Connection Error", errorMessage);
+      } catch (diagError) {
+        Alert.alert(
+          "Error",
+          `Failed to load students from ${apiUrl}\n\nMake sure:\n1. Apache is running\n2. MySQL is running\n3. API server is accessible at ${apiUrl}`,
+        );
+      }
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [apiUrl]);
 
   useEffect(() => {
     loadStudents();
