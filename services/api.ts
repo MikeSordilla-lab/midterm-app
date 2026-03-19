@@ -33,7 +33,7 @@ export const getStudents = async (): Promise<Student[]> => {
         'Content-Type': 'application/json',
       },
       mode: 'cors',
-      credentials: 'omit'
+      credentials: 'include'
     });
 
     console.log('Response status:', response.status);
@@ -77,7 +77,7 @@ export const createStudent = async (
       },
       body: params.toString(),
       mode: 'cors',
-      credentials: 'omit'
+      credentials: 'include'
     });
 
     console.log('Create response status:', response.status);
@@ -118,7 +118,7 @@ export const updateStudent = async (
       },
       body: params.toString(),
       mode: 'cors',
-      credentials: 'omit'
+      credentials: 'include'
     });
 
     console.log('Update response status:', response.status);
@@ -155,7 +155,7 @@ export const deleteStudent = async (id: number): Promise<ApiResponse> => {
       },
       body: params.toString(),
       mode: 'cors',
-      credentials: 'omit'
+      credentials: 'include'
     });
 
     console.log('Delete response status:', response.status);

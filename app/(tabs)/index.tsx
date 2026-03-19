@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   View,
   Alert,
-  ActivityIndicator,
   SafeAreaView,
   RefreshControl,
   Platform,
@@ -17,7 +16,9 @@ import { StudentForm } from "@/components/student-form";
 import { StudentCard } from "@/components/student-card";
 import { EnhancedTextInput } from "@/components/ui/text-input";
 import { EnhancedButton } from "@/components/ui/button";
+import { StudentListSkeleton } from "@/components/ui/skeleton";
 import { useThemeColor } from "@/hooks/use-theme-color";
+import { useAuth } from "@/hooks/use-auth";
 import {
   Spacing,
   BorderRadius,
@@ -51,6 +52,7 @@ export default function HomeScreen() {
   const textColor = useThemeColor({}, "text");
   const isDarkMode = textColor === "#f9fafb";
   const themeColors = isDarkMode ? DarkTheme.colors : LightTheme.colors;
+  const { logout, user } = useAuth();
 
   // Load students
   const loadStudents = useCallback(async () => {
@@ -161,19 +163,72 @@ export default function HomeScreen() {
 
   if (loading) {
     return (
-      <ThemedView
+      <SafeAreaView
         style={[styles.container, { backgroundColor: themeColors.background }]}
       >
-        <View style={styles.centerContent}>
-          <ActivityIndicator size="large" color={themeColors.primary} />
-          <ThemedText
-            type="body"
-            style={[styles.loadingText, { color: themeColors.textSecondary }]}
-          >
-            Loading students...
-          </ThemedText>
+        {/* Header Section */}
+        <ThemedView
+          style={[
+            styles.header,
+            {
+              backgroundColor: themeColors.surfaceBackground,
+              borderBottomColor: themeColors.divider,
+            },
+          ]}
+        >
+          <View style={styles.headerTop}>
+            <View style={{ flex: 1 }}>
+              <ThemedText type="h1" style={styles.title}>
+                📚 Students
+              </ThemedText>
+              <ThemedText
+                type="bodySmall"
+                style={[styles.subtitle, { color: themeColors.textSecondary }]}
+              >
+                Loading...
+              </ThemedText>
+            </View>
+            <EnhancedButton
+              title="Logout"
+              onPress={logout}
+              variant="outline"
+              size="sm"
+            />
+          </View>
+          {user && (
+            <ThemedText
+              type="bodySmall"
+              style={[styles.userText, { color: themeColors.textTertiary }]}
+            >
+              👤 {user.first_name} {user.last_name}
+            </ThemedText>
+          )}
+        </ThemedView>
+
+        {/* Skeleton Loader List */}
+        <ThemedView
+          style={[
+            styles.searchContainer,
+            { backgroundColor: themeColors.background },
+          ]}
+        >
+          <EnhancedTextInput
+            placeholder="Search by name or ID..."
+            value=""
+            onChangeText={() => {}}
+            editable={false}
+          />
+        </ThemedView>
+
+        <View
+          style={[
+            styles.listContainer,
+            { backgroundColor: themeColors.background },
+          ]}
+        >
+          <StudentListSkeleton count={5} />
         </View>
-      </ThemedView>
+      </SafeAreaView>
     );
   }
 
@@ -191,16 +246,34 @@ export default function HomeScreen() {
           },
         ]}
       >
-        <ThemedText type="h1" style={styles.title}>
-          📚 Students
-        </ThemedText>
-        <ThemedText
-          type="bodySmall"
-          style={[styles.subtitle, { color: themeColors.textSecondary }]}
-        >
-          {filteredStudents.length} student
-          {filteredStudents.length !== 1 ? "s" : ""} found
-        </ThemedText>
+        <View style={styles.headerTop}>
+          <View style={{ flex: 1 }}>
+            <ThemedText type="h1" style={styles.title}>
+              📚 Students
+            </ThemedText>
+            <ThemedText
+              type="bodySmall"
+              style={[styles.subtitle, { color: themeColors.textSecondary }]}
+            >
+              {filteredStudents.length} student
+              {filteredStudents.length !== 1 ? "s" : ""} found
+            </ThemedText>
+          </View>
+          <EnhancedButton
+            title="Logout"
+            onPress={logout}
+            variant="outline"
+            size="sm"
+          />
+        </View>
+        {user && (
+          <ThemedText
+            type="bodySmall"
+            style={[styles.userText, { color: themeColors.textTertiary }]}
+          >
+            👤 {user.first_name} {user.last_name}
+          </ThemedText>
+        )}
       </ThemedView>
 
       {/* Search Bar Section */}
@@ -324,12 +397,22 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.lg,
     borderBottomWidth: 1,
   },
+  headerTop: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    gap: Spacing.md,
+  },
   title: {
     marginBottom: Spacing.xs,
     fontWeight: "700" as const,
   },
   subtitle: {
     marginTop: Spacing.sm,
+  },
+  userText: {
+    marginTop: Spacing.sm,
+    fontSize: 12,
   },
 
   // Search

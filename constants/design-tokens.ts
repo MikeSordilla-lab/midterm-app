@@ -319,47 +319,27 @@ export const BorderRadius = {
 
 export const Shadows = {
   none: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0,
-    shadowRadius: 0,
-    elevation: 0,
+    boxShadow: 'none',
   },
 
   // Shadow Level 1 - Subtle
   sm: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
   },
 
   // Shadow Level 2 - Default
   md: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 3,
+    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
   },
 
   // Shadow Level 3 - Emphasized
   lg: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.1,
-    shadowRadius: 15,
-    elevation: 5,
+    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
   },
 
   // Shadow Level 4 - Heavy
   xl: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 20 },
-    shadowOpacity: 0.15,
-    shadowRadius: 25,
-    elevation: 8,
+    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
   },
 } as const;
 
